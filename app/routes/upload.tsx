@@ -1,4 +1,3 @@
-import { log } from 'console';
 import React, { useState, type FormEvent } from 'react'
 import FileUploader from '~/components/FileUploader';
 import Navbar from '~/components/Navbar'
