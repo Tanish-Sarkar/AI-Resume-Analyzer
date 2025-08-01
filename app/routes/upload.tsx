@@ -1,4 +1,5 @@
-import React, { useState, type FormEvent } from 'react'
+import { prepareInstructions } from '../../constants/index';
+import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router';
 import FileUploader from '~/components/FileUploader';
 import Navbar from '~/components/Navbar'
@@ -39,11 +40,30 @@ const upload = () => {
             id: uuid,
             resumepath: uploadedFile.path,
             imagepath: uploadedImage.path,
-            jobDescription, jobTitle, companyName,
+            jobDescription, 
+            jobTitle, 
+            companyName,
             feedback: '',
         }
+        await kv.set(`$resume {uuid}`, JSON.stringify(data))
 
-        await kv.set(`$resume {uuid}`, value: JSON.stringify(data))
+        setStatusText("Analyzing...")
+        const feedback = await ai.feedback(
+            uploadedFile.path, 
+            prepareInstructions({ jobTitle, jobDescription })
+        )
+        if(!feedback) return setStatusText("Error: Unable to analyze resume")
+
+        const feedbackText = typeof feedback.message.content === 'string' 
+        ? feedback.message.content
+        : feedback.message.content[0].text
+
+        data.feedback = JSON.parse(feedbackText)
+        await kv.set(`$resume {uuid}`, JSON.stringify(data))
+        setStatusText('Analysis Completed, redirecting...')
+        console.log(data);
+        
+
     }
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
