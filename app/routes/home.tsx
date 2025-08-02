@@ -1,13 +1,13 @@
-import Navbar from "~/components/Navbar";
+import Navbar from "../components/Navbar";
 import type { Route } from "./+types/home";
-import ResumeCard from "~/components/ResumeCard";
+import ResumeCard from "../components/ResumeCard";
 import { resumes } from "../../constants/index";
-import { usePuterStore } from "~/lib/puter";
-import { useLocation, useNavigate } from "react-router";
-import { useEffect } from "react";
+import { usePuterStore } from "../lib/puter";
+import { Link, useNavigate } from "react-router";
+import { useEffect, useState } from "react";
 
 export function meta({}: Route.MetaArgs) {
-  return [
+  return [ 
     { title: "Resumind" },
     { name: "description", content: "Get yourself a stepping bonus!" },
   ];
